@@ -1,0 +1,200 @@
+/* Ultimate 3 */
+
+html, body {
+	margin: 0px;
+	padding: 0px;
+	font-family: "Verdana", "Arial", sans-serif;
+}
+body {
+	background: #ddd;
+}
+a {
+	color: #001A66;
+}
+a:hover {
+	text-decoration: none;
+}
+a img {
+	border: 0;
+	border: 0px;
+}
+button {
+	display: block;
+	float: left;
+	
+	width: 150px;
+	height: 19px;
+	margin-top: -3px;
+	padding: 5px;
+	
+	color: black;
+	background-color: #eeeeee;
+	background-image: url('http://cdn.projectgforum.com/images/gradient.png');
+	background-repeat: repeat-x;
+	border: 1px solid #001A66;
+	
+	text-decoration: none;
+	text-align: center;
+}
+button:hover {
+	background-image: url('http://cdn.projectgforum.com/images/inverse.png');
+	background-repeat: repeat-x;
+	cursor: pointer;
+}
+button:active {
+	background-image: url('http://cdn.projectgforum.com/images/gradient.png');
+	background-repeat: repeat-x;
+	color: #001A66;
+}
+blockquote {
+	border-left: 4px solid gray;
+	padding: 2px 15px 2px 15px;
+	background-color: #eeeeee;
+}
+
+/* Top bar stuff. */
+#top {
+	position: absolute;
+	top: 0px;
+	left: 0px;
+	right: 0px;
+	height: 30px;
+	
+	padding: 10px 10px 5px 10px;
+	border-bottom: 1px solid gray;
+	background-image: url('http://cdn.projectgforum.com/images/texture.png');
+	background-repeat: repeat;
+}
+#top h1 {
+	display: inline;
+	font-size: 20px;
+}
+#top h1 a {
+	text-decoration: none;
+}
+#top h1 a:hover {
+	color: #3366FF;
+}
+#credentials {
+	position: absolute;
+	top: 12px;
+	right: 5px;
+	width: 200px;
+	padding-right: 15px;
+	text-align: right;
+}
+#credentials a img {
+	float: right;
+	margin-top: 2px;
+	padding-left: 5px;
+}
+
+/* Sidebar/thread list stuff. */
+#sidebar {
+	width: 19%;
+	margin: 0px 3% 0px 3%;
+	opacity: 0.9;
+}
+#up {
+	position: fixed;
+	top: 79px;
+	width: 10%;
+	margin: 0px 5% 0px 5%;
+	z-index: 1;
+}
+#up button {
+	width: 100%;
+	height: 30px;
+	z-index: 1;
+}
+#down {
+	position: fixed;
+	bottom: 30px;
+	width: 10%;
+	margin: 0px 5% 0px 5%;
+}
+#down button {
+	width: 100%;
+	height: 30px;
+}
+#threads {
+	position: fixed;
+	top: 105px;
+	bottom: 59px;
+	width: 19%;
+	margin: 0px;
+	padding: 0px;
+	background-color: #eeeeee;
+	border: 1px solid #cccccc;
+	font-size: 12px;
+	overflow: hidden;
+	z-index: 0;
+}
+#threads a:not(.navLink) {
+	display: block;
+	width: 100%;
+	border-bottom: 1px solid #cccccc;
+	color: black;
+	text-decoration: none;
+}
+#threads a:hover:not(.navLink) {
+	background-color: #3366FF;
+}
+.selectedThread {
+	color: white;
+	background-color: #001A66;
+	background-repeat: repeat no-repeat;
+	font-weight: bold;
+}
+#threads ul, #threads ul li{
+	margin: 0px;
+	padding: 0px;
+	list-style: none;
+}
+div.spacer {
+	margin: 0px 15px 0px 15px;
+	padding: 10px 0px 10px 0px;
+}
+
+/* Content/actual post stuff. */
+#content {
+	position: absolute;
+	top: 46px;
+	right: 0px;
+	width: 75%;
+	font-size: 12px;
+	overflow: auto;
+}
+#noselected {
+	width: 50%;
+	margin: 30% 25% 0% 25%;
+}
+.post {
+	clear: both;
+	margin: 30px 30px 30px 0px;
+	padding: 20px 15px 25px 15px;
+	background-color: #eeeeee;
+	border: 1px solid #cccccc;
+	opacity: 0.9;
+}
+.user {
+	display: block;
+	float: left;
+	width: 120px;
+	margin: 0px 15px 15px 0px;
+	padding-bottom: 5px;
+	
+	color: black;
+	background-image: url('http://cdn.projectgforum.com/images/texture.png');
+	background-repeat: repeat;
+	text-align: center;
+	text-decoration: none;
+	overflow: hidden;
+}
+.user:hover {
+	background: none;
+	background-color: #3366FF;
+}
+.signature {
+	clear: both;
+}
