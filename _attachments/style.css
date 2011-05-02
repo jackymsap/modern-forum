@@ -69,10 +69,10 @@ blockquote {
 	display: inline;
 	font-size: 20px;
 }
-#top h1 a {
+#top a {
 	text-decoration: none;
 }
-#top h1 a:hover {
+#top a:hover {
 	color: #3366FF;
 }
 #credentials {
@@ -90,44 +90,18 @@ blockquote {
 }
 
 /* Sidebar/thread list stuff. */
-#sidebar {
-	width: 19%;
-	margin: 0px 3% 0px 3%;
-	opacity: 0.9;
-}
-#up {
-	position: fixed;
-	top: 79px;
-	width: 10%;
-	margin: 0px 5% 0px 5%;
-	z-index: 1;
-}
-#up button {
-	width: 100%;
-	height: 30px;
-	z-index: 1;
-}
-#down {
-	position: fixed;
-	bottom: 30px;
-	width: 10%;
-	margin: 0px 5% 0px 5%;
-}
-#down button {
-	width: 100%;
-	height: 30px;
-}
 #threads {
 	position: fixed;
-	top: 105px;
-	bottom: 59px;
+	top: 76px;
+	bottom: 30px;
 	width: 19%;
-	margin: 0px;
+	margin: 0px 3% 0px 3%;
 	padding: 0px;
+	opacity: 0.9;
 	background-color: #eeeeee;
 	border: 1px solid #cccccc;
 	font-size: 12px;
-	overflow: hidden;
+	overflow: auto;
 	z-index: 0;
 }
 #threads a:not(.navLink) {
@@ -138,12 +112,13 @@ blockquote {
 	text-decoration: none;
 }
 #threads a:hover:not(.navLink) {
+	color: white;
 	background-color: #3366FF;
 }
 .selectedThread {
 	color: white;
 	background-color: #001A66;
-	background-repeat: repeat no-repeat;
+	background-repeat: repeat;
 	font-weight: bold;
 }
 #threads ul, #threads ul li{
@@ -181,7 +156,7 @@ div.spacer {
 	display: block;
 	float: left;
 	width: 120px;
-	margin: 0px 15px 15px 0px;
+	margin: 0px 15px 0px 0px;
 	padding-bottom: 5px;
 	
 	color: black;
@@ -192,9 +167,11 @@ div.spacer {
 	overflow: hidden;
 }
 .user:hover {
+	color: white;
 	background: none;
 	background-color: #3366FF;
 }
 .signature {
 	clear: both;
+	display: hidden;
 }

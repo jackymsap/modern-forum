@@ -1,41 +1,38 @@
 /*global $ document */
 
-function refreshThreads() {
-	var $db = $.couch.db("modern-forum");
+$(function() {
+	var app, refreshThreads, $db = $.couch.db("modern-forum");
 	
-	$("#threads ul").empty();
-	$db.view("modern-forum/threads", {
-		success: function(data) {
-			var i, id, title, html;
-			for (i = 0; i < data.rows.length; i++) {
-				id = data.rows[i].id;
-				title = data.rows[i].value;
-				html = '<li id="' + id + '"><a href="#/thread/' + id + '"><div class="spacer">' + title + '</div></a></li>';
-				$("#threads ul").append(html);
+	refreshThreads = function () {
+		$("#threads ul").empty();
+		$db.view("modern-forum/threads", {
+			success: function(data) {
+				var i, id, title, html;
+				for (i = 0; i < data.rows.length; i++) {
+					id = data.rows[i].id;
+					title = data.rows[i].value;
+					html = '<li id="' + id + '"><a href="#/thread/' + id + '"><div class="spacer">' + title + '</div></a></li>';
+					$("#threads ul").append(html);
+				}
 			}
-		}
-	});
-}
-
-$(document).ready(function() {
-	$('#up button').click(function() {
-		$('#threads').scrollTo('-=200px', 300);
-	});
-
-	$('#down button').click(function() {
-		$('#threads').scrollTo('+=200px', 300);
-	});
+		});
+	}
 	
-	var app = $.sammy('#content', function() {
+	app = $.sammy('#content', function() {
 		refreshThreads();	// later, get and pass in the forum for the threads
-	
+		
 		// When the index is loaded...
 		this.get('#/', function(context) {
 			$("#content").empty();
 		});
 		
+		this.get('#/user/:name', function(context) {
+			$("#content").empty();
+			//$("#content").append(this.params['name']);
+		});
+		
 		this.get('#/thread/:id', function(context) {
-			var that = this, $db = $.couch.db("modern-forum");
+			var that = this;
 			$("#content").empty();
 			
 			// Display all the posts in the thread. Kinda hacky, as it returns ALL the 
@@ -58,9 +55,6 @@ $(document).ready(function() {
 			});
 		});
 	});
-
-	// Run Sammy.js
-	$(function() {
-		app.run('#/');
-	});
+	
+	app.run('#/');
 });
