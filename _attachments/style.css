@@ -29,7 +29,7 @@ button {
 	
 	color: black;
 	background-color: #eeeeee;
-	background-image: url('http://cdn.projectgforum.com/images/gradient.png');
+	background-image: url('gradient.png');
 	background-repeat: repeat-x;
 	border: 1px solid #001A66;
 	
@@ -37,12 +37,12 @@ button {
 	text-align: center;
 }
 button:hover {
-	background-image: url('http://cdn.projectgforum.com/images/inverse.png');
+	background-image: url('inverse.png');
 	background-repeat: repeat-x;
 	cursor: pointer;
 }
 button:active {
-	background-image: url('http://cdn.projectgforum.com/images/gradient.png');
+	background-image: url('gradient.png');
 	background-repeat: repeat-x;
 	color: #001A66;
 }
@@ -62,7 +62,7 @@ blockquote {
 	
 	padding: 10px 10px 5px 10px;
 	border-bottom: 1px solid gray;
-	background-image: url('http://cdn.projectgforum.com/images/texture.png');
+	background-image: url('texture.png');
 	background-repeat: repeat;
 }
 #top h1 {
@@ -160,7 +160,7 @@ div.spacer {
 	padding-bottom: 5px;
 	
 	color: black;
-	background-image: url('http://cdn.projectgforum.com/images/texture.png');
+	background-image: url('texture.png');
 	background-repeat: repeat;
 	text-align: center;
 	text-decoration: none;

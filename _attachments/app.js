@@ -18,20 +18,24 @@ $(function() {
 		});
 	}
 	
-	app = $.sammy('#content', function() {
+	app = $.sammy('#content', function () {
 		refreshThreads();	// later, get and pass in the forum for the threads
 		
 		// When the index is loaded...
-		this.get('#/', function(context) {
+		this.get('#/', function (context) {
 			$("#content").empty();
 		});
 		
-		this.get('#/user/:name', function(context) {
+		this.get('#/settings', function (context) {
+			$("#content").empty();
+		});
+		
+		this.get('#/user/:name', function (context) {
 			$("#content").empty();
 			//$("#content").append(this.params['name']);
 		});
 		
-		this.get('#/thread/:id', function(context) {
+		this.get('#/thread/:id', function (context) {
 			var that = this;
 			$("#content").empty();
 			
@@ -53,6 +57,10 @@ $(function() {
 					}
 				}
 			});
+		});
+		
+		this.put('#/post/reply', function (context) {
+			// Post message?
 		});
 	});
 	
