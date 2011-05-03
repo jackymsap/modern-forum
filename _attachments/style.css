@@ -18,13 +18,8 @@ a img {
 	border: 0;
 	border: 0px;
 }
-button {
+button, input[type=submit] {
 	display: block;
-	float: left;
-	
-	width: 150px;
-	height: 19px;
-	margin-top: -3px;
 	padding: 5px;
 	
 	color: black;
@@ -36,12 +31,12 @@ button {
 	text-decoration: none;
 	text-align: center;
 }
-button:hover {
+button:hover, input[type=submit]:hover {
 	background-image: url('inverse.png');
 	background-repeat: repeat-x;
 	cursor: pointer;
 }
-button:active {
+button:active, input[type=submit]:active {
 	background-image: url('gradient.png');
 	background-repeat: repeat-x;
 	color: #001A66;
@@ -50,6 +45,11 @@ blockquote {
 	border-left: 4px solid gray;
 	padding: 2px 15px 2px 15px;
 	background-color: #eeeeee;
+}
+textarea {
+	padding: 10px;
+	font-family: "Verdana", "Arial", sans-serif;
+	font-size: 12px;
 }
 
 /* Top bar stuff. */
@@ -144,13 +144,26 @@ div.spacer {
 	width: 50%;
 	margin: 30% 25% 0% 25%;
 }
-.post {
+.post, .reply {
 	clear: both;
 	margin: 30px 30px 30px 0px;
 	padding: 20px 15px 25px 15px;
 	background-color: #eeeeee;
 	border: 1px solid #cccccc;
 	opacity: 0.9;
+}
+.reply {
+	text-align: center;
+}
+.reply textarea {
+	width: 60%;
+	height: 150px;
+	min-width: 400px;
+	max-width: 100%;
+}
+.reply input[type=submit] {
+	width: 80px;
+	margin: 15px auto 0px auto;
 }
 .user {
 	display: block;

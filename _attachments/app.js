@@ -19,9 +19,9 @@ $(function() {
 	}
 	
 	app = $.sammy('#content', function () {
+		var currentThread = '';
 		refreshThreads();	// later, get and pass in the forum for the threads
 		
-		// When the index is loaded...
 		this.get('#/', function (context) {
 			$("#content").empty();
 		});
@@ -37,13 +37,16 @@ $(function() {
 		
 		this.get('#/thread/:id', function (context) {
 			var that = this;
+			currentThread = this.params['id'];
 			$("#content").empty();
 			
 			// Display all the posts in the thread. Kinda hacky, as it returns ALL the 
 			// posts in the database and we have to filter here.
 			$db.view("modern-forum/posts", {
 				success: function(data) {
-					var i, id, thread_id, title, html;
+					var i, id, thread_id, title, html, reply;
+					reply = '<div class="reply"><form action="#/post/reply" method="put"><textarea placeholder="Type your reply here." id="replyBox" name="postContent"></textarea><br><input type="submit" value="Reply"></form></div>';
+					
 					for (i = 0; i < data.rows.length; i++) {
 						id = data.rows[i].key;
 						thread_id = data.rows[i].value.thread_id;
@@ -55,12 +58,34 @@ $(function() {
 							$("#content").append(html);
 						}
 					}
+					$("#content").append(reply);	// later, make sure thread is not locked.
 				}
 			});
 		});
 		
 		this.put('#/post/reply', function (context) {
-			// Post message?
+			var postContent = this.params['postContent'], doc = {
+				type: "post",
+				content: postContent,
+				thread_id: currentThread,
+				user_id: 'Andrex',
+				datetime: null
+			};
+			
+			$db.saveDoc(doc, {
+				success: function () {
+					var html;
+					
+					$('#replyBox').val('');
+					html = '<div class="post"><a href="#/user/' + 'Andrex' + '" class="user"><img src="http://i.imgur.com/arExL.png" width="120" height="120" alt="" />' + 'Andrex' + '</a><div>' + postContent + '</div><div class="signature"></div>';
+					$('.post').last().after(html);
+					$('input').blur();
+					// Later, check if new posts were added in the meantime and add them first.
+				},
+				error: function () {
+					alert( "Cannot save new document." );
+				}
+			});
 		});
 	});
 	
