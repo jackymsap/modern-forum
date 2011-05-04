@@ -46,7 +46,7 @@ blockquote {
 	padding: 2px 15px 2px 15px;
 	background-color: #eeeeee;
 }
-textarea {
+textarea, input[type=text] {
 	padding: 10px;
 	font-family: "Verdana", "Arial", sans-serif;
 	font-size: 12px;
@@ -130,6 +130,17 @@ div.spacer {
 	margin: 0px 15px 0px 15px;
 	padding: 10px 0px 10px 0px;
 }
+#newThread {
+	font-weight: bold;
+	text-align: center;
+}
+#threadTitle {
+	width: 60%;
+	min-width: 400px;
+	max-width: 100%;
+	margin-bottom: 15px;
+	padding: 10px 9px;
+}
 
 /* Content/actual post stuff. */
 #content {
@@ -162,7 +173,7 @@ div.spacer {
 	max-width: 100%;
 }
 .reply input[type=submit] {
-	width: 80px;
+	width: 120px;
 	margin: 15px auto 0px auto;
 }
 .user {
