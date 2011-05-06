@@ -7,6 +7,7 @@ html, body {
 }
 body {
 	background: #ddd;
+	overflow-y: scroll;
 }
 a {
 	color: #001A66;
@@ -17,6 +18,10 @@ a:hover {
 a img {
 	border: 0;
 	border: 0px;
+}
+h1 {
+	padding: 0px;
+	margin: 0px 10px 25px 10px;
 }
 button, input[type=submit] {
 	display: block;
@@ -46,10 +51,14 @@ blockquote {
 	padding: 2px 15px 2px 15px;
 	background-color: #eeeeee;
 }
-textarea, input[type=text] {
+textarea, input[type=text], input[type=password], input[type=url], input[type=email] {
 	padding: 10px;
 	font-family: "Verdana", "Arial", sans-serif;
 	font-size: 12px;
+}
+#registerUsername, #loginUsername, input[type=password], input[type=url], input[type=email] {
+	width: 250px;
+	margin-right: 10px;
 }
 
 /* Top bar stuff. */
@@ -131,8 +140,8 @@ div.spacer {
 	padding: 10px 0px 10px 0px;
 }
 #newThread {
-	font-weight: bold;
 	text-align: center;
+	font-weight: bold;
 }
 #threadTitle {
 	width: 60%;
@@ -165,6 +174,9 @@ div.spacer {
 }
 .reply {
 	text-align: center;
+}
+.reply h1 {
+	text-align: left;
 }
 .reply textarea {
 	width: 60%;

@@ -1,11 +1,15 @@
 /*global $ document */
 
 $(function() {
-	var app, refreshThreads, $db = $.couch.db("modern-forum");
+	var $db, refreshThreads, isLoggedIn, username, app;
+	
+	$db = $.couch.db("modern-forum");
 	
 	refreshThreads = function () {
 		$("#threads ul").empty();
-		$("#threads ul").append('<li id="newThread"><a href="#/new/thread"><div class="spacer">New Thread</div></a></li>');
+		if (isLoggedIn()) {
+			$("#threads ul").append('<li id="newThread"><a href="#/new/thread"><div class="spacer">New Thread</div></a></li>');
+		}
 		$db.view("modern-forum/threads", {
 			success: function(data) {
 				var i, id, title, html;
@@ -17,7 +21,25 @@ $(function() {
 				}
 			}
 		});
-	}
+	};
+	
+	isLoggedIn = function () {
+		var loggedIn = true;
+		$.couch.session({ success: function (data) {
+			username = data.userCtx.name;
+			console.log(data.userCtx);
+			if (username !== null) {
+				$('#credentials').html('<a href="#/settings">' + username + ' <img src="dropdown.png" width="16" height="16" alt="Settings"></a>');
+				loggedIn = true;
+			}
+			else {
+				username = 'Anonymous';
+				loggedIn = false;
+			}
+			// to do: append link to admin panel
+		}});
+		return loggedIn;
+	};
 	
 	app = $.sammy('#content', function () {
 		var currentThread = '';
@@ -25,6 +47,19 @@ $(function() {
 		
 		this.get('#/', function (context) {
 			$("#content").empty();
+			isLoggedIn();
+		});
+		
+		this.get('#/login', function (context) {
+			var html = '<div class="reply"><h1>Login</h1><form action="#/post/login" method="put"><input type="text" name="username" id="loginUsername" autofocus required placeholder="Username?"><input type="password" name="password" required placeholder="Password?"><input type="submit" value="Login"></form></div>';
+			$("#content").empty();
+			$('#content').append(html);
+		});
+		
+		this.get('#/register', function (context) {
+			var html = '<div class="reply"><h1>Register</h1><form action="#/post/register" method="put"><input type="text" name="username" id="registerUsername" required placeholder="Desired username?"><input type="password" name="password" required placeholder="Password?"><br><br><input type="email" name="email" required placeholder="Email?"><input type="url" name="avatar" placeholder="Avatar URL?"><input type="submit" value="Register"></form></div>';
+			$('#content').empty();
+			$('#content').append(html);
 		});
 		
 		this.get('#/settings', function (context) {
@@ -37,7 +72,7 @@ $(function() {
 		});
 		
 		this.get('#/new/thread', function (context) {
-			var reply = '<div class="reply"><form action="#/post/thread" method="put"><input type="text" name="threadTitle" id="threadTitle" autofocus required placeholder="Type your thread\'s title here"><br><textarea id="replyBox" name="postContent" required placeholder="Type your post here"></textarea><br><input type="submit" value="Create Thread"></form></div>';
+			var reply = '<div class="reply"><h1>New Thread</h1><form action="#/post/thread" method="put"><input type="text" name="threadTitle" id="threadTitle" autofocus required placeholder="Type your thread\'s title here"><br><textarea id="replyBox" name="postContent" required placeholder="Type your post here"></textarea><br><input type="submit" value="Create Thread"></form></div>';
 			
 			$("#content").empty();
 			$("#content").append(reply);
@@ -66,9 +101,32 @@ $(function() {
 							$("#content").append(html);
 						}
 					}
-					$("#content").append(reply);	// later, make sure thread is not locked.
+					if (isLoggedIn()) {
+						$("#content").append(reply);	// later, make sure thread is not locked.
+					}
 				}
 			});
+		});
+		
+		this.put('#/post/login', function (context) {
+			$.couch.login({ name: this.params['username'], password: this.params['password'] });
+			isLoggedIn();
+			window.location = '#/';
+		});
+		
+		this.put('#/post/register', function (context) {
+			var doc, password = this.params['password'];
+			
+			doc = {
+				name: this.params['username'],
+				email: this.params['email'],
+				avatar: this.params['avatar']
+			};
+			
+			$.couch.signup(doc, password);
+			//$.couch.login({ name: this.params['username'], password: this.params['password'] });	// For some reason, produces an error.
+			isLoggedIn();
+			window.location = '#/login';		// to do: go to new user/welcome screen
 		});
 		
 		this.put('#/post/reply', function (context) {
@@ -76,7 +134,7 @@ $(function() {
 				type: "post",
 				content: postContent,
 				thread_id: currentThread,
-				user_id: 'Andrex',
+				user_id: username,
 				datetime: null
 			};
 			
@@ -85,7 +143,7 @@ $(function() {
 					var html;
 					
 					$('#replyBox').val('');
-					html = '<div class="post"><a href="#/user/' + 'Andrex' + '" class="user"><img src="http://i.imgur.com/arExL.png" width="120" height="120" alt="" />' + 'Andrex' + '</a><div>' + postContent + '</div><div class="signature"></div>';
+					html = '<div class="post"><a href="#/user/' + username + '" class="user"><img src="http://i.imgur.com/arExL.png" width="120" height="120" alt="" />' + username + '</a><div>' + postContent + '</div><div class="signature"></div>';
 					$('.post').last().after(html).fadeIn();
 					$('input').blur();
 					// Later, check if new posts were added in the meantime and add them first.
@@ -134,5 +192,6 @@ $(function() {
 		});
 	});
 	
+	isLoggedIn();
 	app.run('#/');
 });
