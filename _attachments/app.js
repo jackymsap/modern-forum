@@ -1,44 +1,52 @@
 /*global $ document */
 
 $(function() {
-	var $db, refreshThreads, isLoggedIn, username, app;
+	var $db, loggedIn = true, username;					// Variables.
+	var checkLogin, loginDisplay, refreshThreads, app;	// Functions.
 	
-	$db = $.couch.db("modern-forum");
+	$db = $.couch.db('modern-forum');
+	
+	checkLogin = function (callback) {
+		$.couch.session({ success: function (data) {
+			username = data.userCtx.name;
+			if (username !== null) {
+				callback(true);
+			}
+			else {
+				callback(false);
+			}
+		}});
+	};
+	
+	loginDisplay = function (logged) {
+		if (logged) {
+			// to do: append link to admin panel
+			$('#credentials').html('<a href="#/settings">' + username + ' <img src="dropdown.png" width="16" height="16" alt="Settings"></a>');
+			loggedIn = true;
+		}
+		else {
+			username = 'Anonymous';
+			loggedIn = false;
+		}
+	};
 	
 	refreshThreads = function () {
 		$("#threads ul").empty();
-		if (isLoggedIn()) {
-			$("#threads ul").append('<li id="newThread"><a href="#/new/thread"><div class="spacer">New Thread</div></a></li>');
+		checkLogin(loginDisplay);
+		if (loggedIn) {				// Why does this never work right?
+			$('#threads ul').append('<li id="newThread"><a href="#/new/thread"><div class="spacer">New Thread</div></a></li>');
 		}
-		$db.view("modern-forum/threads", {
+		$db.view('modern-forum/threads', {
 			success: function(data) {
 				var i, id, title, html;
 				for (i = 0; i < data.rows.length; i++) {
 					id = data.rows[i].id;
 					title = data.rows[i].value;
 					html = '<li id="' + id + '"><a href="#/thread/' + id + '"><div class="spacer">' + title + '</div></a></li>';
-					$("#threads ul").append(html);
+					$('#threads ul').append(html);
 				}
 			}
 		});
-	};
-	
-	isLoggedIn = function () {
-		var loggedIn = true;
-		$.couch.session({ success: function (data) {
-			username = data.userCtx.name;
-			console.log(data.userCtx);
-			if (username !== null) {
-				$('#credentials').html('<a href="#/settings">' + username + ' <img src="dropdown.png" width="16" height="16" alt="Settings"></a>');
-				loggedIn = true;
-			}
-			else {
-				username = 'Anonymous';
-				loggedIn = false;
-			}
-			// to do: append link to admin panel
-		}});
-		return loggedIn;
 	};
 	
 	app = $.sammy('#content', function () {
@@ -47,12 +55,12 @@ $(function() {
 		
 		this.get('#/', function (context) {
 			$("#content").empty();
-			isLoggedIn();
+			checkLogin(loginDisplay);
 		});
 		
 		this.get('#/login', function (context) {
 			var html = '<div class="reply"><h1>Login</h1><form action="#/post/login" method="put"><input type="text" name="username" id="loginUsername" autofocus required placeholder="Username?"><input type="password" name="password" required placeholder="Password?"><input type="submit" value="Login"></form></div>';
-			$("#content").empty();
+			$('#content').empty();
 			$('#content').append(html);
 		});
 		
@@ -63,29 +71,29 @@ $(function() {
 		});
 		
 		this.get('#/settings', function (context) {
-			$("#content").empty();
+			$('#content').empty();
 		});
 		
 		this.get('#/user/:name', function (context) {
-			$("#content").empty();
+			$('#content').empty();
 			//$("#content").append(this.params['name']);
 		});
 		
 		this.get('#/new/thread', function (context) {
 			var reply = '<div class="reply"><h1>New Thread</h1><form action="#/post/thread" method="put"><input type="text" name="threadTitle" id="threadTitle" autofocus required placeholder="Type your thread\'s title here"><br><textarea id="replyBox" name="postContent" required placeholder="Type your post here"></textarea><br><input type="submit" value="Create Thread"></form></div>';
 			
-			$("#content").empty();
-			$("#content").append(reply);
+			$('#content').empty();
+			$('#content').append(reply);
 		});
 		
 		this.get('#/thread/:id', function (context) {
 			var that = this;
 			currentThread = this.params['id'];
-			$("#content").empty();
+			$('#content').empty();
 			
 			// Display all the posts in the thread. Kinda hacky, as it returns ALL the 
 			// posts in the database and we have to filter here.
-			$db.view("modern-forum/posts", {
+			$db.view('modern-forum/posts', {
 				success: function(data) {
 					var i, id, thread_id, title, html, reply;
 					reply = '<div class="reply"><form action="#/post/reply" method="put"><textarea id="replyBox" name="postContent" required placeholder="Type your reply here"></textarea><br><input type="submit" value="Reply"></form></div>';
@@ -98,11 +106,12 @@ $(function() {
 						//$('#' + thread_id + " li").addClass('selectedThread');
 						if (that.params['id'] == thread_id) {
 							html = '<div class="post"><a href="#/user/' + user_id + '" class="user"><img src="http://i.imgur.com/arExL.png" width="120" height="120" alt="" />' + user_id + '</a><div>' + content + '</div><div class="signature"></div>';
-							$("#content").append(html);
+							$('#content').append(html);
 						}
 					}
-					if (isLoggedIn()) {
-						$("#content").append(reply);	// later, make sure thread is not locked.
+					checkLogin(loginDisplay);
+					if (loggedIn) {
+						$('#content').append(reply);	// later, make sure thread is not locked.
 					}
 				}
 			});
@@ -110,7 +119,7 @@ $(function() {
 		
 		this.put('#/post/login', function (context) {
 			$.couch.login({ name: this.params['username'], password: this.params['password'] });
-			isLoggedIn();
+			checkLogin(loginDisplay);
 			window.location = '#/';
 		});
 		
@@ -125,13 +134,13 @@ $(function() {
 			
 			$.couch.signup(doc, password);
 			//$.couch.login({ name: this.params['username'], password: this.params['password'] });	// For some reason, produces an error.
-			isLoggedIn();
+			checkLogin(loginDisplay);
 			window.location = '#/login';		// to do: go to new user/welcome screen
 		});
 		
 		this.put('#/post/reply', function (context) {
 			var postContent = this.params['postContent'], doc = {
-				type: "post",
+				type: 'post',
 				content: postContent,
 				thread_id: currentThread,
 				user_id: username,
@@ -158,7 +167,7 @@ $(function() {
 			var threadTitle = this.params['threadTitle'], postContent = this.params['postContent'], threadDoc, postDoc;
 			
 			threadDoc = {
-				type: "thread",
+				type: 'thread',
 				title: threadTitle,
 				forum_id: null
 			};
@@ -167,10 +176,10 @@ $(function() {
 			$db.saveDoc(threadDoc, {
 				success: function (threadData) {
 					postDoc = {
-						type: "post",
+						type: 'post',
 						content: postContent,
 						thread_id: threadData.id,
-						user_id: 'Andrex',
+						user_id: username,
 						datetime: null
 					};
 					
@@ -181,17 +190,21 @@ $(function() {
 							refreshThreads();
 						},
 						error: function () {
-							alert("Cannot save the post.");
+							alert('Cannot save the post.');
 						}
 					});
 				},
 				error: function () {
-					alert("Cannot save the thread.");
+					alert('Cannot save the thread.');
 				}
 			});
 		});
 	});
 	
-	isLoggedIn();
+	$.couch.userDb(function () {
+		console.log(arguments);	
+	});
+	
+	checkLogin(loginDisplay);
 	app.run('#/');
 });
