@@ -31,7 +31,7 @@ $(function() {
 	};
 	
 	refreshThreads = function () {
-		$("#threads ul").empty();
+		$('#threads ul').empty();
 		checkLogin(loginDisplay);
 		if (loggedIn) {				// Why does this never work right?
 			$('#threads ul').append('<li id="newThread"><a href="#/new/thread"><div class="spacer">New Thread</div></a></li>');
@@ -88,7 +88,7 @@ $(function() {
 		
 		this.get('#/thread/:id', function (context) {
 			var that = this;
-			currentThread = this.params['id'];
+			currentThread = this.params.id;
 			$('#content').empty();
 			
 			// Display all the posts in the thread. Kinda hacky, as it returns ALL the 
@@ -104,7 +104,7 @@ $(function() {
 						user_id = data.rows[i].value.user_id;
 						content = data.rows[i].value.content;
 						//$('#' + thread_id + " li").addClass('selectedThread');
-						if (that.params['id'] == thread_id) {
+						if (that.params.id == thread_id) {
 							html = '<div class="post"><a href="#/user/' + user_id + '" class="user"><img src="http://i.imgur.com/arExL.png" width="120" height="120" alt="" />' + user_id + '</a><div>' + content + '</div><div class="signature"></div>';
 							$('#content').append(html);
 						}
@@ -118,18 +118,18 @@ $(function() {
 		});
 		
 		this.put('#/post/login', function (context) {
-			$.couch.login({ name: this.params['username'], password: this.params['password'] });
+			$.couch.login({ name: this.params.username, password: this.params.password });
 			checkLogin(loginDisplay);
 			window.location = '#/';
 		});
 		
 		this.put('#/post/register', function (context) {
-			var doc, password = this.params['password'];
+			var doc, password = this.params.password;
 			
 			doc = {
-				name: this.params['username'],
-				email: this.params['email'],
-				avatar: this.params['avatar']
+				name: this.params.username,
+				email: this.params.email,
+				avatar: this.params.avatar
 			};
 			
 			$.couch.signup(doc, password);
@@ -139,7 +139,7 @@ $(function() {
 		});
 		
 		this.put('#/post/reply', function (context) {
-			var postContent = this.params['postContent'], doc = {
+			var postContent = this.params.postContent, doc = {
 				type: 'post',
 				content: postContent,
 				thread_id: currentThread,
@@ -164,7 +164,7 @@ $(function() {
 		});
 		
 		this.put('#/post/thread', function (context) {
-			var threadTitle = this.params['threadTitle'], postContent = this.params['postContent'], threadDoc, postDoc;
+			var threadTitle = this.params.threadTitle, postContent = this.params.postContent, threadDoc, postDoc;
 			
 			threadDoc = {
 				type: 'thread',
@@ -185,7 +185,7 @@ $(function() {
 					
 					$db.saveDoc(postDoc, {
 						success: function (postData) {
-							var threadURL = '#/thread/' + threadData.id
+							var threadURL = '#/thread/' + threadData.id;
 							window.location = threadURL;
 							refreshThreads();
 						},
